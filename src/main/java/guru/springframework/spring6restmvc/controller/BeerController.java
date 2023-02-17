@@ -23,6 +23,12 @@ public class BeerController {
     public static final String API_V1_BEER = "/api/v1/beer";
     private final BeerService beerService;
 
+    @PutMapping(value = "{beerId}")
+    public ResponseEntity<Void> updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+        beerService.updateBeeById(beerId, beer);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
     public ResponseEntity<Void> handlePost(@RequestBody Beer beer) {
         Beer savedBeer = beerService.saveNewBeer(beer);
