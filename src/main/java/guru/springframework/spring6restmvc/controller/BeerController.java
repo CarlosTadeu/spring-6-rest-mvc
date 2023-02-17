@@ -4,24 +4,34 @@ import guru.springframework.spring6restmvc.model.Beer;
 import guru.springframework.spring6restmvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/beer")
+@RequestMapping(BeerController.API_V1_BEER)
 public class BeerController {
+
+    public static final String API_V1_BEER = "/api/v1/beer";
     private final BeerService beerService;
 
     @PostMapping
     public ResponseEntity<Void> handlePost(@RequestBody Beer beer) {
         Beer savedBeer = beerService.saveNewBeer(beer);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+        HttpHeaders headers = new HttpHeaders();
+        Path locationPath = Paths.get(API_V1_BEER, savedBeer.getId().toString());
+        headers.add("Location", locationPath.toString());
+
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @GetMapping()
