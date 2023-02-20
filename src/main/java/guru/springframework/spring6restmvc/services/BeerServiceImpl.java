@@ -91,7 +91,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public void updateBeeById(UUID beerId, Beer beer) {
+    public void updateBeerById(UUID beerId, Beer beer) {
         Beer exiting = beerMap.get(beerId);
         exiting.setBeerName(beer.getBeerName());
         exiting.setPrice(beer.getPrice());
@@ -99,5 +99,10 @@ public class BeerServiceImpl implements BeerService {
         exiting.setQuantityOnHand(beer.getQuantityOnHand());
         exiting.setBeerStyle(beer.getBeerStyle());
         exiting.setUpdateDate(LocalDateTime.now());
+    }
+
+    @Override
+    public void deleteBeerById(UUID beerId) {
+        beerMap.remove(beerId);
     }
 }
