@@ -23,6 +23,12 @@ public class BeerController {
     public static final String API_V1_BEER = "/api/v1/beer";
     private final BeerService beerService;
 
+    @PatchMapping(value = "{beerId}")
+    public ResponseEntity<Void> updatePatchById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+        beerService.patchBeerById(beerId, beer);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @DeleteMapping(value = "{beerId}")
     public ResponseEntity<Void> deleteById(@PathVariable("beerId") UUID beerId) {
         beerService.deleteBeerById(beerId);
