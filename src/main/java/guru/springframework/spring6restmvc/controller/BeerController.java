@@ -53,7 +53,7 @@ public class BeerController {
     }
 
     @GetMapping()
-    public List<Beer> listBeers(){
+    public List<Beer> listBeers() {
         return beerService.listBeers();
     }
 

@@ -44,7 +44,7 @@ class CustomerControllerTest {
     void updateCustomerById() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
 
-        mockMvc.perform(put("/api/v1/customer/" +  customer.getId())
+        mockMvc.perform(put("/api/v1/customer/" + customer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(customer)))
