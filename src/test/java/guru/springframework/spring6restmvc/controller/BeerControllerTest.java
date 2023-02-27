@@ -47,7 +47,7 @@ class BeerControllerTest {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
         mockMvc.perform(delete("/api/v1/beer/" + beer.getId())
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
         ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);

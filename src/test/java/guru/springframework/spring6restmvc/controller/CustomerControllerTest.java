@@ -6,6 +6,8 @@ import guru.springframework.spring6restmvc.services.CustomerService;
 import guru.springframework.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,9 +38,25 @@ class CustomerControllerTest {
 
     CustomerServiceImpl customerServiceImpl;
 
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
     @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void deleteBeerById() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(customerService).deleteCustomerById(uuidArgumentCaptor.capture());
+
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
@@ -50,7 +69,9 @@ class CustomerControllerTest {
                         .content(objectMapper.writeValueAsBytes(customer)))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).updateCustomerById(any(UUID.class), any(Customer.class));
+        verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(Customer.class));
+
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
@@ -75,7 +96,7 @@ class CustomerControllerTest {
         given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
 
         mockMvc.perform(get("/api/v1/customer")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
@@ -90,7 +111,7 @@ class CustomerControllerTest {
                 .willReturn(testCustomer);
 
         mockMvc.perform(get("/api/v1/customer/" + testCustomer.getId())
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
