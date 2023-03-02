@@ -17,49 +17,54 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(BeerController.API_V1_BEER)
 public class BeerController {
 
-    public static final String API_V1_BEER = "/api/v1/beer";
+    public static final String BEER_PATH = "/api/v1/beer";
+    public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
     private final BeerService beerService;
 
-    @PatchMapping(value = "{beerId}")
+    @PatchMapping(BEER_PATH_ID)
     public ResponseEntity<Void> updatePatchById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         beerService.patchBeerById(beerId, beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "{beerId}")
+    @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("beerId") UUID beerId) {
         beerService.deleteBeerById(beerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(value = "{beerId}")
+    @PutMapping(BEER_PATH_ID)
     public ResponseEntity<Void> updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         beerService.updateBeerById(beerId, beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping
+    @PostMapping(BEER_PATH)
     public ResponseEntity<Void> handlePost(@RequestBody Beer beer) {
         Beer savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
-        Path locationPath = Paths.get(API_V1_BEER, savedBeer.getId().toString());
+        Path locationPath = Paths.get(BEER_PATH, savedBeer.getId().toString());
         headers.add("Location", locationPath.toString());
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @GetMapping()
+    @GetMapping(BEER_PATH)
     public List<Beer> listBeers() {
         return beerService.listBeers();
     }
 
-    @GetMapping(value = "{beerId}")
+    @GetMapping(BEER_PATH_ID)
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("Get Beer by Id - in controller");
         return beerService.getBeerById(beerId);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity handleNotFoundException() {
+        return ResponseEntity.notFound().build();
     }
 }

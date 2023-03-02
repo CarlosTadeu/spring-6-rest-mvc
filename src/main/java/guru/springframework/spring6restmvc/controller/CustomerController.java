@@ -17,49 +17,49 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(CustomerController.API_V1_CUSTOMER)
 public class CustomerController {
 
-    public static final String API_V1_CUSTOMER = "/api/v1/customer";
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
     private final CustomerService customerService;
 
-    @PatchMapping(value = "{customerId}")
+    @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> updatePatchById(@PathVariable("customerId") UUID customerId,
                                                 @RequestBody Customer customer) {
         customerService.patchCustomerById(customerId, customer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(value = "{customerId}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("customerId") UUID customerId) {
         customerService.deleteCustomerById(customerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("{customerId}")
+    @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> updateById(@PathVariable("customerId") UUID customerId,
                                            @RequestBody Customer customer) {
         customerService.updateCustomerById(customerId, customer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping
+    @PostMapping(CUSTOMER_PATH)
     public ResponseEntity<Void> handlePost(@RequestBody Customer customer) {
         Customer savedCustomer = customerService.saveNewCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
-        Path locationPath = Paths.get(API_V1_CUSTOMER, savedCustomer.getId().toString());
+        Path locationPath = Paths.get(CUSTOMER_PATH, savedCustomer.getId().toString());
         headers.add("Location", locationPath.toString());
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @GetMapping()
+    @GetMapping(CUSTOMER_PATH)
     public List<Customer> listCustomers() {
         return customerService.listCustomers();
     }
 
-    @GetMapping(value = "{customerId}")
+    @GetMapping(CUSTOMER_PATH_ID)
     public Customer getBeerById(@PathVariable("customerId") UUID customerId) {
         log.debug("Get Customer by Id");
         return customerService.getCustomerById(customerId);
