@@ -50,8 +50,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerById(UUID id) {
-        return customerMap.get(id);
+    public Optional<Customer> getCustomerById(UUID id) {
+        return Optional.of(customerMap.get(id));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void updateCustomerById(UUID customerId, Customer customer) {
-        Customer existing = getCustomerById(customerId);
+        Customer existing = customerMap.get(customerId);
 
         existing.setName(customer.getName());
         existing.setLastModifiedDate(LocalDateTime.now());
