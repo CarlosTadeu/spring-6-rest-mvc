@@ -3,7 +3,6 @@ package guru.springframework.spring6restmvc.controller;
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +10,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BeerControllerIT {
@@ -22,6 +22,19 @@ class BeerControllerIT {
 
     @Autowired
     BeerRepository beerRepository;
+
+    @Test
+    void beerIdNotFound() {
+        UUID randomUUID = UUID.randomUUID();
+        assertThrows(NotFoundException.class, () -> beerController.getBeerById(randomUUID));
+    }
+
+    @Test
+    void getBeerById() {
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO beerDTO = beerController.getBeerById(beer.getId());
+        assertThat(beerDTO).isNotNull();
+    }
 
     @Test
     void listBeers() {
