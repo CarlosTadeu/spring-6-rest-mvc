@@ -60,7 +60,7 @@ public class CustomerController {
     }
 
     @GetMapping(CUSTOMER_PATH_ID)
-    public CustomerDTO getBeerById(@PathVariable("customerId") UUID customerId) {
+    public CustomerDTO getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("Get Customer by Id");
         return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
