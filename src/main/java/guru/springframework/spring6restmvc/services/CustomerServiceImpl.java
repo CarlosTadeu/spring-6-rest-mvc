@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void patchCustomerById(UUID customerId, CustomerDTO customer) {
+    public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = customerMap.get(customerId);
 
         if (StringUtils.hasText(customer.getName())) {
@@ -93,5 +93,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         existing.setLastModifiedDate(LocalDateTime.now());
+        return null;
     }
 }
