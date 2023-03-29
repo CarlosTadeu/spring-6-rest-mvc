@@ -2,11 +2,13 @@ package guru.springframework.spring6restmvc.controller;
 
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.services.BeerService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Path;
@@ -31,7 +33,7 @@ public class BeerController {
 
     @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("beerId") UUID beerId) {
-        if (!beerService.deleteBeerById(beerId)) {
+        if (Boolean.FALSE.equals(beerService.deleteBeerById(beerId))) {
             throw new NotFoundException();
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -46,7 +48,7 @@ public class BeerController {
     }
 
     @PostMapping(BEER_PATH)
-    public ResponseEntity<Void> handlePost(@RequestBody BeerDTO beer) {
+    public ResponseEntity<Void> handlePost(@Validated @RequestBody BeerDTO beer) {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
