@@ -32,7 +32,7 @@ public class CustomerController {
 
     @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("customerId") UUID customerId) {
-        if (!customerService.deleteCustomerById(customerId))
+        if (Boolean.FALSE.equals(customerService.deleteCustomerById(customerId)))
             throw new NotFoundException();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
