@@ -67,8 +67,10 @@ public class BeerServiceJPA implements BeerService {
     public Optional<BeerDTO> patchBeerById(UUID beerId, BeerDTO beerDTO) {
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
         beerRepository.findById(beerId)
-                .ifPresentOrElse(foundBeer -> ServiceUtils.pathBeer(beerDTO, foundBeer),
-                        () -> atomicReference.set(Optional.empty()));
+                .ifPresentOrElse(foundBeer -> {
+                    ServiceUtils.pathBeer(beerDTO, foundBeer);
+                    atomicReference.set(Optional.of(beerMapper.beerToBeerDto(beerRepository.save(foundBeer))));
+                        }, () -> atomicReference.set(Optional.empty()));
         return atomicReference.get();
     }
 }
