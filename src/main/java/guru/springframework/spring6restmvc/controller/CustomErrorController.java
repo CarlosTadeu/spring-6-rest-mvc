@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,8 +15,18 @@ import java.util.Map;
 public class CustomErrorController {
 
     @ExceptionHandler
-    ResponseEntity<Void> handleJpaViolations(TransactionSystemException exception) {
-        return ResponseEntity.badRequest().build();
+    ResponseEntity<List<Map<String, String>>> handleJpaViolations(TransactionSystemException exception) {
+        if (exception.getCause().getCause() instanceof ConstraintViolationException constraintViolationException) {
+            List<Map<String, String>> errors = constraintViolationException.getConstraintViolations().stream()
+                    .map(constraintViolation -> {
+                        Map<String, String> errorMap = new HashMap<>();
+                        errorMap.put(constraintViolation.getPropertyPath().toString(),
+                                constraintViolation.getMessage());
+                        return errorMap;
+                    }).toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+        return null;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
