@@ -6,8 +6,6 @@ import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
-
 public class ServiceUtils {
 
     private ServiceUtils() {
@@ -17,7 +15,6 @@ public class ServiceUtils {
     public static void pathCustomer(CustomerDTO customerDTO, Customer foundCustomer) {
         if (StringUtils.hasText(customerDTO.getName()))
             foundCustomer.setName(customerDTO.getName());
-        foundCustomer.setLastModifiedDate(LocalDateTime.now());
     }
 
     public static void pathBeer(BeerDTO beerDTO, Beer foundBeer) {
@@ -36,6 +33,5 @@ public class ServiceUtils {
         if (StringUtils.hasText(beerDTO.getUpc())) {
             foundBeer.setUpc(beerDTO.getUpc());
         }
-        foundBeer.setUpdateDate(LocalDateTime.now());
     }
 }
