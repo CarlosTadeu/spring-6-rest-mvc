@@ -162,7 +162,7 @@ class BeerControllerIT {
 
     @Test
     void listBeers() {
-        List<BeerDTO> dtos = beerController.listBeers();
+        List<BeerDTO> dtos = beerController.listBeers(null);
         assertThat(dtos).isNotEmpty();
     }
 
@@ -171,7 +171,7 @@ class BeerControllerIT {
     @Test
     void emptyList() {
         beerRepository.deleteAll();
-        List<BeerDTO> dtos = beerController.listBeers();
+        List<BeerDTO> dtos = beerController.listBeers(null);
         assertThat(dtos).isEmpty();
     }
 }
