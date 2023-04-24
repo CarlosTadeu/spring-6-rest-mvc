@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,11 +58,28 @@ class BeerControllerIT {
     }
 
     @Test
+    void listBeersByNameAndStyle() throws Exception {
+        mockMvc.perform(get(BeerController.BEER_PATH)
+                        .queryParam("beerName", "IPA")
+                        .queryParam("beerStyle", BeerStyle.IPA.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", Is.is(310)));
+    }
+
+    @Test
+    void listBeersByStyle() throws Exception {
+        mockMvc.perform(get(BeerController.BEER_PATH)
+                        .queryParam("beerStyle", BeerStyle.ALE.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", Is.is(400)));
+    }
+
+    @Test
     void listBeersByName() throws Exception {
         mockMvc.perform(get(BeerController.BEER_PATH)
-                .queryParam("beerName", "IPA"))
+                        .queryParam("beerName", "IPA"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", Is.is(100)));
+                .andExpect(jsonPath("$.size()", Is.is(336)));
     }
 
     @Test
@@ -162,7 +180,7 @@ class BeerControllerIT {
 
     @Test
     void listBeers() {
-        List<BeerDTO> dtos = beerController.listBeers(null);
+        List<BeerDTO> dtos = beerController.listBeers(null, null);
         assertThat(dtos).isNotEmpty();
     }
 
@@ -171,7 +189,7 @@ class BeerControllerIT {
     @Test
     void emptyList() {
         beerRepository.deleteAll();
-        List<BeerDTO> dtos = beerController.listBeers(null);
+        List<BeerDTO> dtos = beerController.listBeers(null, null);
         assertThat(dtos).isEmpty();
     }
 }
