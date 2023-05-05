@@ -37,32 +37,34 @@ public class BootstrapData implements CommandLineRunner {
     }
 
     private void loadCsvData() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:csvdata/beers.csv");
 
-        List<BeerCSVRecord> recs = beerCsvService.convertCSV(file);
+        if (beerRepository.count() < 10) {
+            File file = ResourceUtils.getFile("classpath:csvdata/beers.csv");
+            List<BeerCSVRecord> recs = beerCsvService.convertCSV(file);
 
-        recs.forEach(beerCSVRecord -> {
-            BeerStyle beerStyle = switch (beerCSVRecord.getStyle()) {
-                case "American Pale Lager" -> BeerStyle.LAGER;
-                case "American Pale Ale (APA)", "American Black Ale", "Belgian Dark Ale", "American Blonde Ale" ->
-                        BeerStyle.ALE;
-                case "American IPA", "American Double / Imperial IPA", "Belgian IPA" -> BeerStyle.IPA;
-                case "American Porter" -> BeerStyle.PORTER;
-                case "Oatmeal Stout", "American Stout" -> BeerStyle.STOUT;
-                case "Saison / Farmhouse Ale" -> BeerStyle.SAISON;
-                case "Fruit / Vegetable Beer", "Winter Warmer", "Berliner Weissbier" -> BeerStyle.WHEAT;
-                case "English Pale Ale" -> BeerStyle.PALE_ALE;
-                default -> BeerStyle.PILSNER;
-            };
+            recs.forEach(beerCSVRecord -> {
+                BeerStyle beerStyle = switch (beerCSVRecord.getStyle()) {
+                    case "American Pale Lager" -> BeerStyle.LAGER;
+                    case "American Pale Ale (APA)", "American Black Ale", "Belgian Dark Ale", "American Blonde Ale" ->
+                            BeerStyle.ALE;
+                    case "American IPA", "American Double / Imperial IPA", "Belgian IPA" -> BeerStyle.IPA;
+                    case "American Porter" -> BeerStyle.PORTER;
+                    case "Oatmeal Stout", "American Stout" -> BeerStyle.STOUT;
+                    case "Saison / Farmhouse Ale" -> BeerStyle.SAISON;
+                    case "Fruit / Vegetable Beer", "Winter Warmer", "Berliner Weissbier" -> BeerStyle.WHEAT;
+                    case "English Pale Ale" -> BeerStyle.PALE_ALE;
+                    default -> BeerStyle.PILSNER;
+                };
 
-            beerRepository.save(Beer.builder()
-                    .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(), 50))
-                    .beerStyle(beerStyle)
-                    .price(BigDecimal.TEN)
-                    .upc(beerCSVRecord.getRow().toString())
-                    .quantityOnHand(beerCSVRecord.getCount())
-                    .build());
-        });
+                beerRepository.save(Beer.builder()
+                        .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(), 50))
+                        .beerStyle(beerStyle)
+                        .price(BigDecimal.TEN)
+                        .upc(beerCSVRecord.getRow().toString())
+                        .quantityOnHand(beerCSVRecord.getCount())
+                        .build());
+            });
+        }
     }
 
     private void loadBeerData() {
