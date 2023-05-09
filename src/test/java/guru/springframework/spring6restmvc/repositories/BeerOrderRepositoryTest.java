@@ -44,18 +44,3 @@ class BeerOrderRepositoryTest {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
