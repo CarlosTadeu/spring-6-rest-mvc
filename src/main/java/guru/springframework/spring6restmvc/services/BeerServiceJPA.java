@@ -27,7 +27,7 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_PAGE_SIZE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 25;
 
     @Override
     public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory,
@@ -74,7 +74,7 @@ public class BeerServiceJPA implements BeerService {
             }
         }
 
-        Sort sort = Sort.by(Sort.Order.asc("beerName"));
+            Sort sort = Sort.by(Sort.Order.asc("beerName"));
 
         return PageRequest.of(queryPageNumber, queryPageSize, sort);
     }
