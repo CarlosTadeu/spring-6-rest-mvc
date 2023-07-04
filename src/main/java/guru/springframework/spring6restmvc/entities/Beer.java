@@ -41,6 +41,7 @@ public class Beer {
     @Column(length = 50)
     private String beerName;
 
+    @Column(columnDefinition = "smallint")
     @NotNull
     private BeerStyle beerStyle;
 
